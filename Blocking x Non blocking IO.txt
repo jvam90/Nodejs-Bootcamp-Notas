@@ -1,0 +1,82 @@
+Quando se utiliza Nodejs, muitas funções possuem duas 'vertentes': síncronas e assíncronas.
+Por exemplo, a função 'readFile' do módulo fs:
+
+const fs = require('fs');
+const text = fs.readFileSync(pathRead, charset);
+console.log(text);
+
+No código acima, sua natureza é síncrona: ele vai ser executado linha após linha, esperando o fim de cada uma para poder 
+ir para a próxima. Então, o módulo é requerido, o conteúdo do arquivo é lido e depois impresso. No entanto, só vai ser impresso
+quando todo o conteúdo for lido, o que pode impactar o desempenho.
+
+No entanto, o mesmo método possui sua característica 'assíncrona':
+
+const fs = require('fs');
+
+fs.readFile('./files/lerolero.txt', 'utf-8', (error, data) => {
+    console.log(data);
+});
+
+console.log('Lendo dados...');
+
+A função 'readFile' vai ler 'assincronamente' o arquivo. Ou seja, ela vai iniciar o processo de leitura em segundo plano e vai 
+imprimir quando terminar. Mas como ela sabe que terminou? Através do que se chama de função de callback, ou retorno. É o terceiro
+argumento: (error, data). Nada mais é uma função que vai ser invocada quando o processo de leitura dos dados em segundo plano
+for concluído. Se der algum erro, a variável 'error' terá valor. Se não, 'data' possuirá os dados do arquivo.
+
+E ao executar esse código, é possível que a última linha: console.log('Lendo dados...'); seja executada antes que o arquivo 
+seja lido.
+
+Mas por quê é tão importante o uso de funções assíncronas e callbacks? Nodejs roda em apenas um processo, que tem apenas uma 
+thread. Ou seja, não importa a quantidade de usuários, todos eles irão acessar o mesmo processo, que é o código que está sendo
+executado. Se um usuário bloquear o processo com código síncrono, os demais terão de esperar pelo fim do travamento, o que meio
+que nega o propósito do Nodejs, que é baseado em eventos e I/O não bloqueante. Por isso, dependendo da aplicação, é interessante
+o uso de callbacks e funções assíncronas.
+
+Supondo que 5 usuários estejam acessando o processo com código síncrono:
+
+1 - Login
+2 - Cadastro
+3 - Leitura
+4 - Atualização de dados
+5 - Visualização de dados
+
+O primeiro consegue usar o Login, mas os demais vão ter de esperar por ele terminar.
+
+Se o código for assíncrono, enquanto o sistema processa o login do primeiro usuário, ele pode começar a processar as requisições
+dos demais em segundo plano, e quando forem completadas, as funções de callback vão sendo chamadas para lidar com os pedidos.
+
+Ao contrário de uma outra linguagem de programação, como php ou c#, cada usuário receberia sua própria thread com recursos 
+compartilhados. Um detalhe importante é que: usar callbacks não necessariamente torna o código assíncrono, pois não são todas
+as funções da API do node que possuem a natureza assíncrona. 
+
+Outro ponto importante de callbacks, é o chamado de inferno dos callbacks ou 'callback hell':
+
+fs.readdir(source, function (err, files) {
+  if (err) {
+    console.log('Error finding files: ' + err)
+  } else {
+    files.forEach(function (filename, fileIndex) {
+      console.log(filename)
+      gm(source + filename).size(function (err, values) {
+        if (err) {
+          console.log('Error identifying file size: ' + err)
+        } else {
+          console.log(filename + ' : ' + values)
+          aspect = (values.width / values.height)
+          widths.forEach(function (width, widthIndex) {
+            height = Math.round(width / aspect)
+            console.log('resizing ' + filename + 'to ' + height + 'x' + height)
+            this.resize(width, height).write(dest + 'w' + width + '_' + filename, function(err) {
+              if (err) console.log('Error writing file: ' + err)
+            })
+          }.bind(this))
+        }
+      })
+    })
+  }
+})
+
+Acontece geralmente quando callbacks começam a se aninhar e uns dependerem de outros para que uma operação possa ser completadada.
+Por exemplo, a leitura de um arquivo, que vai ser usado para a leitura de outro de forma aninhada em um callback e por assim adiante.
+Existem formas mais avançadas de lidar com isso, como promisses e async/await.
