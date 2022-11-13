@@ -1,0 +1,24 @@
+Nodejs - um ambiente de execução de javascript feito em cima do motor v8 do google chrome.
+
+Um navegador entende basicamente três coisas: html, javascript e css. E por sí só, ele é um ambiente de
+execução de javascript: ao executar código nas ferramentas de desenvolvedor (console), é possível rodar javascript nativamente.
+
+Nodejs nada mais é que a possibilidade de rodar javascript FORA do navegador, sem suas restrições: um ambiente onde se possa
+rodar javascript. No caso, quem roda de fato, é o v8 engine que existe dentro do Nodejs. Claro que existem algumas coisas que
+diferem, como por exemplo, instruções que são adaptadas. Ou seja, são instruções que por baixo dos panos, executam outra
+linguagem de programação, como por exemplo, C++. Um exemplo disso são funções de acesso à arquivos. 
+
+Por questões de segurança, javascript no navegador não é capaz de acessar arquivos do disco rígido. Já com o Nodejs, existem
+funções javascript que podem fazer esse procedimento, mas que se usa C++ por de baixo dos panos. Outro ponto é que não existe
+o objeto 'document', já que não se roda no navegador.
+
+Assim, é possível:
+
+1 - Criar servidores com Nodejs
+2 - Usar javascript no desenvolvimento do lado do servidor
+3 - Criar aplicações rápidas e escaláveis
+
+Nodejs é baseado em eventos com um modelo de I/O não bloqueante, com uma thread somente. Ou seja, ao invés de esperar por algo
+terminar, por meio de eventos, ele recebe um 'aviso' de que algo pode ser feito enquanto outro está sendo executado em segundo
+plano. Quando esse 'algo' terminar, outro aviso será emitido, fazendo com que o Nodejs fique nesse 'ciclo'. É rápido, mas para
+alguns tipos de programas, não é recomendável, como de uso intensivo de CPU, processamento de imagens, arquivos, etc.
