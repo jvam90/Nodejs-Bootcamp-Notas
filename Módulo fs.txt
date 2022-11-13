@@ -1,0 +1,22 @@
+O módulo fs é o de 'file system', que permite a manipulação de arquivos e seus conteúdos.
+
+const fs = require('fs');
+
+Duas operações básicas que podem ser feitas é a leitura e escrita. Para ler conteúdos de um arquivo:
+
+const conteúdo = fs.readFileSync(<caminho>, <codificação de caracteres>);
+
+O método acima vai ler o que tá dentro do arquivo especificado no caminho, que possui uma codificação de caracteres também
+especificada:
+
+const texto = fs.readFileSync('./files/index.txt', 'utf-8');
+
+Como é 'sync', é um método síncrono, ou seja, ele vai 'travar' enquanto termina a operação de leitura do arquivo.
+
+Para escrever em um arquivo:
+
+fs.writeFileSync(<caminho>, <conteúdo>);
+
+fs.writeFileSync('./files/index.txt', 'Conteúdo');
+
+Esse método também é síncrono e não retorna nada.
