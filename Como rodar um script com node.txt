@@ -1,0 +1,21 @@
+Para rodar um script em javascript com o Nodejs:
+
+1 - Criar um arquivo .js
+2 - Escrever javascript válido
+3 - No terminal, ir na pasta do arquivo e executar o comando node <script>
+
+Por exemplo:
+
+
+//Arquivo javascript index.js
+const nome = "João";
+console.log(nome);
+
+No terminal: node index.js
+
+No caso, não é preciso indexar o script em uma página html, pois o v8 engine serve como um ambiente de execução.
+
+O interessante de usar o Nodejs é fazer uso de suas bibliotecas, através do 'require'. Um exemplo é o fs, ou o 'file system'.
+
+const fs = require('fs'); -> importa um módulo inteiro de funções que permitem a manipulação de arquivos no disco.
+E como tudo em javascript é um objeto, se imprimir a constante 'fs', é possível ver que é um objeto com várias funções dentro.
