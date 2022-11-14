@@ -1,0 +1,22 @@
+Para ler arquivos de forma assíncrona com o módulo 'fs':
+
+const fs = require('fs')
+fs.readFile('caminho', (error, data) => {
+    console.log(data)
+});
+
+Esse método vai ler o conteúdo de um arquivo que vai ser executado por uma função de callback.
+
+Para escrever:
+
+fs.writeFile('caminho', dados, (error) => {
+    if(error){
+        console.log(error.message)
+    }else{
+        console.log('Arquivo escrito com sucesso.;)
+    }
+})
+
+A premissa é a mesma: ele tenta escrever os dados em um arquivo especificado e que também
+recebe um callback. Se der erro, vai ter uma mensagem em error.message. Se não, o arquivo
+foi escrito.
