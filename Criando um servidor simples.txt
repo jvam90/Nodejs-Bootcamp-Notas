@@ -1,0 +1,30 @@
+É possível criar servidores http com javascript e node utilizando a biblioteca http:
+
+const http = require('http');
+
+Com ela, é possível criar servidores que aceitam requisições http. Para isso, basta fazer o seguinte:
+
+1 - Criar o servidor
+2 - Deixar o servidor 'escutando' por requisições
+
+const http = require("http");
+
+const server = http.createServer((request, response) => {
+  response.end("Hello from the server!");
+});
+
+O método createServer retorna um objeto de um servidor. Ele aceita como callback, uma função que tem acesso à dois parâmetros
+comuns em qualquer requisição http: o que se pede (request) e a resposta (response). No código acima, o método end vai
+terminar a requisição devolvendo uma mensagem para o usuário.
+
+server.listen(3000, () => {
+  console.log("Server online at port 3000!");
+});
+
+Para fazer com que o servidor 'escute' por requisições, se usa  método listen, que recebe como parâmetro o número da porta
+que ele vai escutar e uma função de callback, que vai ser chamada quando ele estiver pronto. Após esses passos, basta acessar
+em um navegador localhost:3000 e a resposta vai ser mostrada.
+
+Quando executar o script, será possível ver que a execução não vai terminar após todas as linhas serem executadas, pois o método
+listen fica dentro do 'loop de eventos' (event loop), que é o que o nodejs se baseia: ele vai ficar 'escutando' até que uma requisição
+seja feita na porta 3000. Enquanto não vier, ele fica em 'loop' até que venha.
