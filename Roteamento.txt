@@ -1,0 +1,69 @@
+const http = require("http");
+
+const server = http.createServer((request, response) => {
+  response.end("Hello from the server, my dudes!");
+});
+
+server.listen(3000, () => {
+  console.log("Server online at port 3000!");
+});
+
+O código acima é para um servidor simples. No entanto, não importa a rota que for acessada pelo navegador: a resposta
+sempre será a mesma. Isso se deve ao fato de que o servidor não implementa diferentes ações para quando diferentes rotas
+forem requisitadas, ou seja, roteamento (routing).
+
+Uma coisa que se pode fazer é analisar a url da requisição:
+
+console.log(request.url); -> seguindo o exemplo acima, é possível ver duas linhas:
+
+/
+/favicon.ico
+
+Isso pois quando se faz uma requisição para localhost:3000, por padrão, é como se uma / fosse colocada à frente:
+localhost:3000/, o que faz com que a / seja impressa. O /favicon.ico é uma requisição feita pelo navegador que encontra na 
+listagem de arquivos, esse arquivo favicon.ico, e tenta fazer uma requisição para o obter, por isso é impresso também.
+
+Alguns exemplos de requisições:
+
+http://localhost:3000/test -> /test e /favicon.ico
+http://localhost:3000/test?id=3 -> /test?id=3 e /favicon.ico
+
+Para implementar roteamento, basta uma sequência de if/else:
+
+const path = request.url;
+
+if (path === "/overview" || path === "/") {
+    response.end("Overview Page");
+  } else if (path === "/product") {
+    response.end("Product Page");
+  } else {
+    response.end("Default Page");
+  }
+});
+
+Simplesmente vai analisar qual a rota e executar uma ação. No entanto, se caísse em uma rota inexistente e não houvesse uma 
+condição para tratar desse caso, o navegador iria ficar tentando obter uma resposta do servidor indefinidamente.
+
+É possível passar também códigos http nas respostas:
+
+response.writeHead(404); -> insere no cabeçalho da resposta o código 404 (não encontrado), que pode ser visto ao tentar
+acessar uma rota inexistente: ao abrir o console do navegador, dá para ver um erro de 404.
+
+É possível também passar um objeto representando o header da resposta:
+
+response.writeHead(404, {
+    "Content-type": "text/html",
+    "my-header": "hello from header",
+});
+response.end("<h1>Not found</h1>");
+
+Uma das propriedades é o tipo do conteúdo (Content-type), que é text/html, ou seja, se espera uma resposta em html, que pode
+ser visto no response.end, que recebe uma string contendo html. Outra propriedade é uma customizada: pode-se passar qualquer coisa no header. No entanto, qualquer coisa que vá para o header
+deve ir antes do método end.
+
+Para não ter de lidar manualmente com parâmetros passados por url, pode-se usar a biblioteca url do próprio node para analisar
+e extrair informações:
+
+const url = require('url');
+
+Para mais informações: https://nodejs.org/api/url.html#new-urlinput-base
