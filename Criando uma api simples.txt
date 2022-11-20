@@ -1,0 +1,75 @@
+Criando uma api simples:
+
+Basicamente, uma api é um serviço onde se pode buscar informações. Tais informações estão em um formato chamado JSON.
+JSON, um acrônimo de JavaScript Object Notation, é um formato compacto, de padrão aberto independente, 
+de troca de dados simples e rápida entre sistemas, no formato atributo-valor.
+
+{
+    "propriedade" : "valor"
+}
+
+Dentro, podem existir outros objetos, propriedades, arrays, etc.
+
+Supondo que exista um arquivo JSON com as informações seguindo uma estrutura de diretórios:
+
+pasta
+    dados
+        dados.json
+    servidor.js
+
+Poderia-se se ler os dados através do caminho '../dados/dados.json' ou './dados.json' se estivessem no mesmo nível.
+No entanto, nem sempre seria o caso, ou se fosse rodar em um sistema operacional diferente, poderia apresentar problemas.
+Para isso, existe uma variável de ambiente do nodejs chamada __dirname, que representa o diretório onde o script está sendo
+executado, independente de sistema operacional.
+
+'__dirname/dados.json' -> seria uma abordagem mais correta.
+
+ fs.readFile(`${__dirname}/files/data.json`, "utf-8", (error, data) => {
+    if (error) {
+        response.end(`<h1>${error.message}</h1>`);
+    } else {
+        writeHead(response, 200, textJSON);
+        response.end(data);
+    }
+});
+
+Basicamente seria essa a abordagem para ler um arquivo json e devolver os dados. Lembrando que o response.end precisa devolver
+uma string, mas não teria problema, pois o readFile devolve uma string. No entanto, há um problema de eficiência. O código
+acima estaria provavelmente dentro de uma das rotas, que por sua vez estaria dentro de uma função de callback do createServer.
+A função de callback é chamada toda vez que é há uma requisição, ou seja, toda vez que batesse na rota da api, o arquivo
+seria lido novamente, mesmo se outro usuário já o tivesse feito anteriormente. Mas é possível fazer com que se leia apenas
+uma vez.
+
+const http = require("http");
+const fs = require("fs");
+const textHtml = "text/html";
+const textJSON = "application/json";
+const port = 3000;
+
+const jsonData = fs.readFileSync(`${__dirname}/files/data.json`, "utf-8");
+
+const server = http.createServer((request, response) => {
+  const urlpath = request.url;
+
+  if (urlpath === "/") {
+    writeHead(response, 200, textHtml);
+    response.end("<h1>Homepage</h1>");
+  } else if (urlpath === "/api") {
+    response.end(jsonData);
+  } else {
+    response.end("<h1>Fallback page</h1>");
+  }
+});
+
+function writeHead(response, statusCode, contentType) {
+  response.writeHead(statusCode, {
+    "Content-type": contentType,
+  });
+}
+
+server.listen(port, () => {
+  console.log("Server online on port " + port);
+});
+
+Nesse caso, se usaria a versão síncrona do readFile, pois todo o código de alto nível (mais acima), antes de callbacks
+e funções assíncronas, é executado primeiro. Então, só se lê uma vez o arquivo, que é entregue sempre a cada redirecionamento.
