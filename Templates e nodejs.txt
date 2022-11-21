@@ -1,0 +1,14 @@
+É possível usar templates html em conjunto com um servidor http feito em nodejs. A intenção é
+que se possa criar páginas dinâmicas com dados vindos de um backend.
+
+Num template html podemos delimitar uma parte que vai receber os dados do backend
+com uma sintaxe {%algum_nome_descritivo}:
+
+<p><span class="emoji-left">🌍</span>From {%FROM%}</p>
+
+No caso, o {%FROM%} é configurado no backend e passado como "parâmetro" na hora
+de renderizar.
+
+Um template pode ser usado para chamar outro template:
+
+{%TEMPLATE%} -> aponta para outro arquivo html.
